@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AI Product Job Matcher</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Personal AI Product Project</p>
+        <h1>AI 产品岗位智能匹配与面试准备助手</h1>
+      </div>
+      <div class="status-strip" aria-label="project status">
+        <span>MVP 原型</span>
+        <span id="apiStatus">演示模式</span>
+        <span>事实校验</span>
+      </div>
+    </header>
+
+    <main class="app-shell">
+      <section class="input-panel" aria-label="输入区">
+        <div class="section-head">
+          <h2>输入信息</h2>
+          <p>粘贴岗位 JD 和简历经历，生成岗位能力拆解、匹配评分和面试准备题。</p>
+        </div>
+
+        <label class="field">
+          <span>岗位 JD</span>
+          <textarea id="jdInput" placeholder="粘贴 AI 产品经理/数据产品经理岗位 JD"></textarea>
+        </label>
+
+        <label class="field">
+          <span>简历 / 项目经历</span>
+          <textarea id="resumeInput" placeholder="粘贴你的教育、实习、项目经历，建议去掉手机号等敏感信息"></textarea>
+        </label>
+
+        <div class="button-row">
+          <button id="sampleBtn" class="secondary" type="button">载入样例</button>
+          <button id="clearBtn" class="ghost" type="button">清空</button>
+          <button id="analyzeBtn" class="primary" type="button">生成匹配报告</button>
+        </div>
+
+        <div class="note">
+          <strong>输出约束</strong>
+          <span>公开演示链接使用规则版完成核心流程展示；接入 OpenAI API 后可切换为真实 LLM 输出。</span>
+        </div>
+      </section>
+
+      <section class="result-panel" aria-label="结果区">
+        <div class="result-toolbar">
+          <div>
+            <h2>匹配报告</h2>
+            <p id="reportMeta">等待生成</p>
+          </div>
+          <button id="downloadBtn" class="secondary" type="button" disabled>导出 JSON</button>
+        </div>
+
+        <div id="emptyState" class="empty-state">
+          <h3>先载入样例或粘贴真实 JD</h3>
+          <p>系统会输出总分、能力标签、差距项、STAR 改写建议和面试问题。</p>
+        </div>
+
+        <div id="report" class="report is-hidden">
+          <div class="summary-grid">
+            <div class="score-block">
+              <span class="score-label">总匹配分</span>
+              <strong id="scoreValue">--</strong>
+              <span id="scoreLevel">待分析</span>
+            </div>
+            <div class="summary-block">
+              <span>高匹配能力</span>
+              <strong id="strengthCount">0</strong>
+            </div>
+            <div class="summary-block">
+              <span>待补强能力</span>
+              <strong id="gapCount">0</strong>
+            </div>
+            <div class="summary-block">
+              <span>风险提醒</span>
+              <strong id="riskCount">0</strong>
+            </div>
+          </div>
+
+          <div class="tabs" role="tablist" aria-label="报告视图">
+            <button class="tab is-active" data-tab="overview" type="button">总览</button>
+            <button class="tab" data-tab="rewrite" type="button">改写建议</button>
+            <button class="tab" data-tab="interview" type="button">面试准备</button>
+          </div>
+
+          <section class="tab-view" id="tab-overview">
+            <div class="two-column">
+              <div class="panel-block">
+                <h3>能力维度评分</h3>
+                <div id="dimensionScores" class="dimension-list"></div>
+              </div>
+              <div class="panel-block">
+                <h3>隐私与事实风险</h3>
+                <div id="riskList" class="risk-list"></div>
+              </div>
+            </div>
+
+            <div class="two-column">
+              <div class="panel-block">
+                <h3>JD 识别标签</h3>
+                <div id="requiredTags" class="tag-cloud"></div>
+              </div>
+              <div class="panel-block">
+                <h3>简历证据标签</h3>
+                <div id="resumeTags" class="tag-cloud"></div>
+              </div>
+            </div>
+
+            <div class="panel-block">
+              <h3>能力差距与行动建议</h3>
+              <div id="gapList" class="item-list"></div>
+            </div>
+          </section>
+
+          <section class="tab-view is-hidden" id="tab-rewrite">
+            <div class="panel-block">
+              <h3>STAR 改写建议</h3>
+              <div id="rewriteList" class="item-list"></div>
+            </div>
+          </section>
+
+          <section class="tab-view is-hidden" id="tab-interview">
+            <div class="panel-block">
+              <h3>高概率面试题</h3>
+              <div id="questionList" class="item-list"></div>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
